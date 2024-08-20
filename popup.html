@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup</title>
+    <link rel="stylesheet" href="./popup.css">
+</head>
+
+<body style="min-width: 200px; min-height: 250px;">
+    <h1 style="text-align: center;">invidious</h1>
+    <main>
+        <div>
+            <h4>
+                enable extension
+                <label>
+                    <input type="checkbox" id="enable" style="min-height: 100%;">
+                </label>
+            </h4>
+        </div>
+        <div style="min-width: 100%; cursor:pointer;" id="open">
+            <h4>
+                open invidious
+            </h4>
+        </div>
+        <div style="position: absolute; bottom: 1px; right: 1px;">
+            <a href="https://github.com/irdeako">
+                <img id="deakoIcon" src="https://avatars.githubusercontent.com/u/164867651?s=64&v=4" alt="icon" class="icon">
+            </a>
+            <img id="invidIcon" src="./icon.png" alt="icon" class="icon" width="64px">
+        </div>
+        <div id="alert"></div>
+    </main>
+    <script src="./popup.js"></script>
+</body>
+
+</html>

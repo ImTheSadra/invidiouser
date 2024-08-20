@@ -9,6 +9,7 @@
     "128": "icon.png"
   },
   "version": "0.5",
+  "permissions": ["storage"],
   "content_scripts": [{
     "js": ["background.js"],
     "matches": ["<all_urls>"],
@@ -16,5 +17,8 @@
     "exclude_matches": [
       "https://*.github.com/*","https://*.githubusercontent.com/*"
     ]
-  }]
+  }],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }

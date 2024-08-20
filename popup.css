@@ -1,0 +1,11 @@
+@font-face {
+    font-family: "font";
+    src: url("https://raw.githubusercontent.com/rastikerdar/vazirmatn/master/fonts/ttf/Vazirmatn-Regular.ttf");
+}
+* {
+    font-family: "font";
+}
+
+.icon {
+    border-radius: 20%;
+}

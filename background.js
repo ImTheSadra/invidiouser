@@ -1,8 +1,17 @@
+let endpoint = "invidious.privacyredirect.com";
+
+let enable = false;
+chrome.storage.sync.get('enable', (result)=>{
+    enable = result['enable'];
+})
+
 document.addEventListener('DOMContentLoaded', () => {
     let xhr = new XMLHttpRequest();
+    if(!enable){return;}
     xhr.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            const endpoint = xhr.responseText;
+            endpoint = xhr.responseText;
+            // instance = endpoint;
             if (!window.location.toString().trim().includes(endpoint.trim())) {
                 function walkText(node, text, replace) {
                     if (node.nodeType === 3 && text.test(node.data)) {
@@ -72,7 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 if (window.location.host == "youtube.com"){
-    let location = window.location.toString();
-    let newLoc = location.replace("youtube.com", "invidious.privacyredirect.com");
-    window.location = newLoc;
+    if (enable){
+        let location = window.location.toString();
+        let newLoc = location.replace("youtube.com", endpoint);
+        window.location = newLoc;
+    }
 }
