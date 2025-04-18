@@ -1,11 +1,107 @@
-@font-face {
-    font-family: "font";
-    src: url("https://raw.githubusercontent.com/rastikerdar/vazirmatn/master/fonts/ttf/Vazirmatn-Regular.ttf");
+/* Body and basic container styles */
+body {
+    background-color: #f8fafc;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
-* {
-    font-family: "font";
+
+.popup-container {
+    padding: 20px;
+    position: relative;
+    min-width: 250px;
+    min-height: 300px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title styles */
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1f2937;
+}
+
+/* Options and buttons */
+.option-container {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.option-container h4 {
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+}
+
+/* Open Invidious Button */
+.open-button {
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.open-button:hover {
+    background-color: #2563eb;
+}
+
+.open-button h4 {
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+/* Footer Section with icons */
+.footer-icons {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    display: flex;
+    gap: 10px;
 }
 
 .icon {
-    border-radius: 20%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Alert box */
+.alert {
+    color: #f87171;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+/* Mobile-friendly adjustments */
+@media screen and (max-width: 480px) {
+    .popup-container {
+        width: 90%;
+        min-width: 200px;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+    .open-button {
+        padding: 10px;
+    }
+    .footer-icons {
+        bottom: 8px;
+        right: 8px;
+    }
 }

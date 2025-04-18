@@ -8,30 +8,37 @@
     <link rel="stylesheet" href="./popup.css">
 </head>
 
-<body style="min-width: 200px; min-height: 250px;">
-    <h1 style="text-align: center;">invidious</h1>
-    <main>
-        <div>
-            <h4>
-                enable extension
+<body>
+    <div class="popup-container">
+        <h1>Invidious</h1>
+
+        <main>
+            <!-- Enable Extension Section -->
+            <div class="option-container">
+                <h4>Enable Extension</h4>
                 <label>
-                    <input type="checkbox" id="enable" style="min-height: 100%;">
+                    <input type="checkbox" id="enable">
                 </label>
-            </h4>
-        </div>
-        <div style="min-width: 100%; cursor:pointer;" id="open">
-            <h4>
-                open invidious
-            </h4>
-        </div>
-        <div style="position: absolute; bottom: 1px; right: 1px;">
-            <a href="https://github.com/irdeako">
-                <img id="deakoIcon" src="https://avatars.githubusercontent.com/u/164867651?s=64&v=4" alt="icon" class="icon">
-            </a>
-            <img id="invidIcon" src="./icon.png" alt="icon" class="icon" width="64px">
-        </div>
-        <div id="alert"></div>
-    </main>
+            </div>
+
+            <!-- Open Invidious Section -->
+            <div id="open" class="open-button">
+                <h4>Open Invidious</h4>
+            </div>
+
+            <!-- Footer with Icons -->
+            <div class="footer-icons">
+                <a href="https://github.com/irdeako" target="_blank">
+                    <img id="deakoIcon" src="https://avatars.githubusercontent.com/u/164867651?s=64&v=4" alt="Deako Icon" class="icon">
+                </a>
+                <img id="invidIcon" src="./icon.png" alt="Invidious Icon" class="icon">
+            </div>
+
+            <!-- Alert Message -->
+            <div id="alert" class="alert"></div>
+        </main>
+    </div>
+
     <script src="./popup.js"></script>
 </body>
 
