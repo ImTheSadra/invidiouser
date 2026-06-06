@@ -1,45 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Invidious Hub</title>
     <link rel="stylesheet" href="./popup.css">
 </head>
-
 <body>
-    <div class="popup-container">
+<div class="popup-container">
+    <div class="header">
         <h1>Invidious</h1>
-
-        <main>
-            <!-- Enable Extension Section -->
-            <div class="option-container">
-                <h4>Enable Extension</h4>
-                <label>
-                    <input type="checkbox" id="enable">
-                </label>
-            </div>
-
-            <!-- Open Invidious Section -->
-            <div id="open" class="open-button">
-                <h4>Open Invidious</h4>
-            </div>
-
-            <!-- Footer with Icons -->
-            <div class="footer-icons">
-                <a href="https://github.com/irdeako" target="_blank">
-                    <img id="deakoIcon" src="https://avatars.githubusercontent.com/u/164867651?s=64&v=4" alt="Deako Icon" class="icon">
-                </a>
-                <img id="invidIcon" src="./icon.png" alt="Invidious Icon" class="icon">
-            </div>
-
-            <!-- Alert Message -->
-            <div id="alert" class="alert"></div>
-        </main>
+        <div class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">🌓</div>
     </div>
 
-    <script src="./popup.js"></script>
-</body>
+    <div class="actions-row">
+        <div class="option-card">
+            <h4>Enable Extension</h4>
+            <label class="switch">
+                <input type="checkbox" id="enableExtension">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="option-card" style="justify-content: center;">
+            <button id="openInvidiousBtn" class="open-btn">🔗 Open Invidious</button>
+        </div>
+    </div>
 
+    <!-- URL Manager -->
+    <div class="manager-section">
+        <div class="section-title">
+            <span>📡 Managed Instances</span>
+            <button id="clearAllUrls" class="clear-btn" style="font-size: 0.7rem;">🗑️ Clear all</button>
+        </div>
+
+        <div class="url-input-group">
+            <input type="text" id="urlInput" placeholder="https://invidious.example.com" spellcheck="false">
+            <button id="addUrlBtn" class="primary">➕ Add</button>
+        </div>
+
+        <div id="urlListContainer" class="url-list">
+            <!-- dynamic url items appear here -->
+            <div class="empty-state">✨ No instances added. Add an Invidious URL above.</div>
+        </div>
+
+        <button id="pingAllBtn" class="ping-all">🏓 Ping All URLs</button>
+    </div>
+
+    <div class="footer-icons">
+        <a href="https://github.com/irdeako" target="_blank">
+            <img id="deakoIcon" src="https://avatars.githubusercontent.com/u/164867651?s=64&v=4" alt="Deako" class="icon">
+        </a>
+        <img id="invidIcon" src="https://raw.githubusercontent.com/ImTheSadra/invidiouser/refs/heads/main/icon.png"" alt="Invidious Icon" class="icon">
+    </div>
+
+    <div id="alertMessage" class="alert">✅ Ready — manage Invidious instances</div>
+</div>
+
+<script src="https://raw.githubusercontent.com/ImTheSadra/invidiouser/refs/heads/main/popup.js"></script>
+</body>
 </html>
