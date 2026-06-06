@@ -1,86 +1,112 @@
-let endpoint = "https://inv.nadeko.net";
-let enable = false;
+let endpoint = '';
+let extensionEnabled = false;
 
-chrome.storage.sync.get('enable', (result) => {
-    enable = result['enable'];
-    if (enable == undefined){
-        enable = true;
-        chrome.storage.sync.set({'enable': true});
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (!enable) return;
-
-    fetch("https://raw.githubusercontent.com/ImTheSadra/invidiouser/refs/heads/main/endpoint.txt")
-        .then(response => response.text())
-        .then(data => {
-            endpoint = data.trim();
-
-            if (!window.location.toString().trim().includes(endpoint)) {
-                // Function to replace text nodes and attributes
-                function walkText(node, text, replace) {
-                    if (node.nodeType === 3 && text.test(node.data)) {
-                        node.data = node.data.replace(text, replace);
-                    } else if (node.nodeType === 1 && node.nodeName !== "SCRIPT" && !node.closest('[contenteditable="true"]')) {
-                        Array.from(node.attributes).forEach(attr => {
-                            if (attr.specified && !(node.nodeName === "IMG" && attr.name === "src" || attr.name === "value")) {
-                                if (text.test(attr.value)) {
-                                    attr.value = attr.value.replace(text, replace);
-                                }
-                            }
-                        });
-                        Array.from(node.childNodes).forEach(childNode => walkText(childNode, text, replace));
-                    }
-                }
-
-                // Replace text on the page
-                function setup() {
-                    walkText(document.body, /(www\.)?youtube\.com\/account/, `${endpoint}/login`);
-                    walkText(document.body, /(www\.)?youtube\.com/, endpoint);
-                    walkText(document.body, /youtube\.com/, endpoint);
-                    walkText(document.body, /^https?:\/\/youtu.be/, 'https://');
-                    walkText(document.body, /YouTube/, 'Invidious');
-                    walkText(document.body, /youtube/, 'invidious');
-                    walkText(document.body, /یوتیوب/, 'اینویدیوس');
-                    walkText(document.body, /یوتوب/, 'اینویدیوس');
-
-                    // Update links and iframes
-                    document.querySelectorAll('a').forEach(el => {
-                        if (el.href.includes('youtube.com/account')) {
-                            el.href = el.href.replace('youtube.com/account', `${endpoint}/login`);
-                        } else if (el.href.includes('youtube.com')) {
-                            el.href = el.href.replace('youtube.com', endpoint);
-                        } else if (el.href.includes('youtu.be')) {
-                            el.href = el.href.replace('youtu.be', endpoint);
-                        }
-                    });
-
-                    document.querySelectorAll('iframe').forEach(el => {
-                        if (el.src.includes('youtube.com/account')) {
-                            el.src = el.src.replace('youtube.com/account', `${endpoint}/login`);
-                        } else if (el.src.includes('youtube.com')) {
-                            el.src = el.src.replace('youtube.com', endpoint);
-                        } else if (el.src.includes('youtu.be')) {
-                            el.src = el.src.replace('youtu.be', endpoint);
-                        }
-                    });
-                }
-
-                setup();
-                const observer = new MutationObserver(() => {
-                    setup();
-                });
-                observer.observe(document.body, {
-                    childList: true,
-                    subtree: true,
-                });
+async function getActiveEndpoint() {
+    return new Promise((resolve) => {
+        chrome.storage.local.get(['extensionEnabled', 'selectedUrl', 'invidiousUrls'], (result) => {
+            const enabled = result.extensionEnabled === true;
+            if (!enabled) {
+                resolve(null);
+                return;
             }
-        })
-        .catch(error => console.error("Error fetching endpoint:", error));
-});
+            let chosen = result.selectedUrl;
+            if (!chosen && result.invidiousUrls && result.invidiousUrls.length) {
+                chosen = result.invidiousUrls[0];
+            }
+            if (!chosen) {
+                chosen = 'https://inv.nadeko.net';
+            }
+            resolve(new URL(chosen).host);
+        });
+    });
+}
 
-if (window.location.host === "youtube.com" && enable) {
-    const newLoc = window.location.toString().replace("youtube.com", endpoint);
-    window.location = newLoc;
+function walkAndReplace(node, regex, replacement) {
+    if (node.nodeType === Node.TEXT_NODE && regex.test(node.data)) {
+        node.data = node.data.replace(regex, replacement);
+    } else if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== 'SCRIPT' && !node.closest('[contenteditable="true"]')) {
+        Array.from(node.attributes).forEach(attr => {
+            if (attr.specified && !(node.nodeName === 'IMG' && attr.name === 'src') && attr.name !== 'value') {
+                if (regex.test(attr.value)) {
+                    attr.value = attr.value.replace(regex, replacement);
+                }
+            }
+        });
+        node.childNodes.forEach(child => walkAndReplace(child, regex, replacement));
+    }
+}
+
+function replaceYouTubeWithInvidious(endpointUrl) {
+    const cleanEndpoint = endpointUrl.replace(/\/$/, '');
+    
+    // Patterns to replace
+    const replacements = [
+        { regex: /(www\.)?youtube\.com\/account/g, replace: `${cleanEndpoint}/login` },
+        { regex: /(www\.)?youtube\.com/g, replace: cleanEndpoint },
+        { regex: /youtu\.be/g, replace: cleanEndpoint },
+        { regex: /youtube\.com/g, replace: cleanEndpoint },
+        { regex: /YouTube/g, replace: 'Invidious' },
+        { regex: /youtube/gi, replace: 'invidious' },
+        { regex: /یوتیوب/g, replace: 'اینویدیوس' },
+        { regex: /یوتوب/g, replace: 'اینویدیوس' }
+    ];
+
+    replacements.forEach(({ regex, replace }) => {
+        walkAndReplace(document.body, regex, replace);
+    });
+
+    // Fix links and iframes
+    document.querySelectorAll('a').forEach(el => {
+        if (el.href) {
+            if (el.href.includes('youtube.com/account')) {
+                el.href = el.href.replace('youtube.com/account', `${cleanEndpoint}/login`);
+            } else if (el.href.includes('youtube.com')) {
+                el.href = el.href.replace('youtube.com', cleanEndpoint);
+            } else if (el.href.includes('youtu.be')) {
+                el.href = el.href.replace('youtu.be', cleanEndpoint);
+            }
+        }
+    });
+
+    document.querySelectorAll('iframe').forEach(el => {
+        if (el.src) {
+            if (el.src.includes('youtube.com/account')) {
+                el.src = el.src.replace('youtube.com/account', `${cleanEndpoint}/login`);
+            } else if (el.src.includes('youtube.com')) {
+                el.src = el.src.replace('youtube.com', cleanEndpoint);
+            } else if (el.src.includes('youtu.be')) {
+                el.src = el.src.replace('youtu.be', cleanEndpoint);
+            }
+        }
+    });
+}
+
+async function initContentScript() {
+    const activeEndpoint = await getActiveEndpoint();
+    if (!activeEndpoint) return;
+
+    endpoint = activeEndpoint;
+
+    if (window.location.hostname.includes('youtube.com') || window.location.hostname.includes('youtu.be')) {
+        let newUrl = window.location.href;
+        newUrl = newUrl.replace(/(www\.)?youtube\.com/, endpoint);
+        newUrl = newUrl.replace(/youtu\.be/, endpoint);
+        if (newUrl !== window.location.href) {
+            window.location.href = newUrl;
+            return;
+        }
+    }
+
+    replaceYouTubeWithInvidious(endpoint);
+
+    const observer = new MutationObserver(() => {
+        replaceYouTubeWithInvidious(endpoint);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initContentScript);
+} else {
+    initContentScript();
 }
